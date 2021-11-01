@@ -10,4 +10,6 @@ Run `simulation/solve_noise.m` to simulate noise, and run `simulation/plot_noise
 
 Run `flow_cytometry/plot.r` to calculate noise from the sample data in `flow_cytometry/data`.
 
+## Contact
+
 For any issues, please contact `weilei92@tsinghua.edu.cn`.
