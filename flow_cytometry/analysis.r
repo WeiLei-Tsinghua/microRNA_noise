@@ -10,9 +10,6 @@ sample.num <- 100
 # threshold for outlier removal
 outlier.cut <- 0.05
 
-
-dir.create()
-
 # read files
 path <- "./data/"
 d.case <- read.table(paste0(path, "case.txt"), header = T)
