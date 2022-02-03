@@ -1,10 +1,10 @@
 library(ggplot2)
 
 # preset parameters
-# threshold of mKate positive cells
-min_mKate <- 10^1.8
-# range for mKate
-mKate_bin <- 10^seq(1.8, 4.8, 0.2)
+# threshold of mKate2 positive cells
+min_mKate2 <- 10^1.8
+# range for mKate2
+mKate2_bin <- 10^seq(1.8, 4.8, 0.2)
 # sampling numbers for noise calculation
 sample.num <- 100
 # threshold for outlier removal
@@ -19,13 +19,13 @@ d.case$miRNA <- "miRNA"
 d.ctrl$miRNA <- "ctrl"
 
 d <- rbind(d.case, d.ctrl)
-d <- d[d$EYFP > 0 & d$mKate > min_mKate, ]
+d <- d[d$EYFP > 0 & d$mKate2 > min_mKate2, ]
 
 # function to calculate noise
 CalculateNoise <- function(d){
-    bin.num <- length(mKate_bin) - 1
-    mKate_mean <- c()
-    mKate_sd <- c()
+    bin.num <- length(mKate2_bin) - 1
+    mKate2_mean <- c()
+    mKate2_sd <- c()
     EYFP_mean <- c()
     EYFP_sd <- c()
     EYFP_CV <- c()
@@ -34,26 +34,26 @@ CalculateNoise <- function(d){
     
     # get noise
     for(i in 1:bin.num){
-        this_data <- d[d$mKate > mKate_bin[i] & d$mKate < mKate_bin[i + 1], ]
+        this_data <- d[d$mKate2 > mKate2_bin[i] & d$mKate2 < mKate2_bin[i + 1], ]
         this_data <- this_data[order(this_data$EYFP), ]
         # filter out outliers
         cut_range_low <- outlier.cut * nrow(this_data)
         cut_range_high <- (1 - outlier.cut) * nrow(this_data)
         this_data <- this_data[cut_range_low:cut_range_high, ]
       
-        mKate_mean_temp <- rep(NA, times = sample.num)
+        mKate2_mean_temp <- rep(NA, times = sample.num)
         EYFP_mean_temp <- rep(NA, times = sample.num)
         EYFP_CV_temp <- rep(NA, times = sample.num)
       
         for (j in 1:sample.num){
             bin_sample_temp <- this_data[sample(1:nrow(this_data), ceiling(nrow(this_data)/2)),]
-            mKate_mean_temp[j] <- mean(bin_sample_temp$mKate)
+            mKate2_mean_temp[j] <- mean(bin_sample_temp$mKate2)
             EYFP_mean_temp[j] <- mean(bin_sample_temp$EYFP)
             EYFP_CV_temp[j] <- sd(bin_sample_temp$EYFP) / mean(bin_sample_temp$EYFP)
         }
       
-        mKate_mean[i] <- mean(mKate_mean_temp)
-        mKate_sd[i] <- sd(mKate_mean_temp)
+        mKate2_mean[i] <- mean(mKate2_mean_temp)
+        mKate2_sd[i] <- sd(mKate2_mean_temp)
         EYFP_mean[i] <- mean(EYFP_mean_temp)
         EYFP_sd[i] <- sd(EYFP_mean_temp)
         EYFP_CV[i] <- mean(EYFP_CV_temp)
@@ -61,7 +61,7 @@ CalculateNoise <- function(d){
         cell_count[i] <- nrow(this_data)
     }
     
-    this_data <- data.frame(mKate_mean = mKate_mean, mKate_sd = mKate_sd,
+    this_data <- data.frame(mKate2_mean = mKate2_mean, mKate2_sd = mKate2_sd,
                             EYFP_mean = EYFP_mean, EYFP_sd = EYFP_sd, 
                             EYFP_CV = EYFP_CV, EYFP_CVsd = EYFP_CVsd,
                             cell_count = cell_count)
@@ -86,7 +86,7 @@ write.table(d.result, "result/result.txt", sep = "\t", quote = F, row.names = F,
 
 # visualization
 pdf("result/mean.pdf", width = 4, height = 3)
-p <- ggplot(d.result, aes(x = log10(mKate_mean), y = log10(EYFP_mean),
+p <- ggplot(d.result, aes(x = log10(mKate2_mean), y = log10(EYFP_mean),
   ymax = log10(EYFP_mean + EYFP_sd), ymin = log10(EYFP_mean - EYFP_sd)))
 p <- p + geom_point(aes(color = miRNA)) + geom_line(aes(color = miRNA))
 p <- p + theme_bw()
