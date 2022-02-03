@@ -20,10 +20,12 @@ subplot(1,2,1)
 for i = 1:N_alter
     Ctrl = exp_mean(1, :);
     FC = log10(exp_mean(i,:)./Ctrl);
-    semilogx(exp_mean(i,:), FC, 'LineWidth', 1);
+    plot(log10(exp_mean(i,:)), FC, 'LineWidth', 1);
     legend_str{i} = ['condition' num2str(i)];
     hold on
 end
+
+box('off')
 
 title('Fold change')
 xlabel('log10(expression) (a.u.)')
@@ -33,10 +35,12 @@ legend(legend_str)
 %% noise
 subplot(1,2,2)
 for i = 1:N_alter
-    semilogx(exp_mean(i,:), exp_CV_plot(i,:), 'LineWidth', 1);
+    plot(log10(exp_mean(i,:)), exp_CV_plot(i,:), 'LineWidth', 1);
     legend_str{i} = ['condition' num2str(i)];
     hold on
 end
+
+box('off')
 
 title('CV')
 xlabel('log10(expression) (a.u.)')

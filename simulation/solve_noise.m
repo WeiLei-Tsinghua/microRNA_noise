@@ -60,15 +60,15 @@ alter_para = [  kR * [0 1 1 2];
 %}
             
 %% set simulation parameters
-% the number of different expression levels of the observed gene
+% set how many different kTs are simulated. A total of N_level kTs is generated with a uniform step between min_kT and max_kT with a logarithmic scale.
 N_level = 100;
-% the range of log10(kT1)
-min_KT1 = -3;
-max_kT1 = -1;
+% the range of log10(kT)
+min_KT = -3;
+max_kT = -1;
 
 %% start to run
 % create kT list
-kT_list = 10.^linspace(min_KT1, max_kT1, N_level);
+kT_list = 10.^linspace(min_KT, max_kT, N_level);
 
 % the number of different simulation conditions
 [N_para, N_alter] = size(alter_para);
